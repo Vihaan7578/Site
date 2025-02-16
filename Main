@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Football Tournament Bracket</title>
+<style>
+body {
+    font-family: sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.bracket {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around; /* Evenly distributes columns */
+    align-items: flex-start; /* Aligns items to the top */
+    margin-bottom: 20px;
+}
+
+.column {
+    flex: 1; /* Each column takes up equal space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+.match {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px 0;
+    width: 200px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.match strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.match input {
+    width: 50px;
+    padding: 5px;
+    margin: 5px;
+    text-align: center;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+}
+
+.final {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 10px;
+    margin: 5px 0;
+    width: 200px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+
+/* Style for better visual separation */
+.round-title {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+
+/* Optional: Add responsiveness */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+    .bracket {
+        flex-direction: column;
+        align-items: center;
+    }
+    .column {
+        width: 100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Football Tournament</h1>
+
+  <div class="bracket">
+    <div class="column">
+      <h2 class="round-title">Round of 6</h2>
+      <div class="match">
+        <strong>Match 1:</strong>
+        Player 1: <input type="number" id="p1_m1_score" value="0">
+        <br>
+        Player 2: <input type="number" id="p2_m1_score" value="0">
+      </div>
+      <div class="match">
+        <strong>Match 2:</strong>
+        Player 3: <input type="number" id="p3_m2_score" value="0">
+        <br>
+        Player 4: <input type="number" id="p4_m2_score" value="0">
+      </div>
+      <div class="match">
+        <strong>Match 3:</strong>
+        Player 5: <input type="number" id="p5_m3_score" value="0">
+        <br>
+        Player 6: <input type="number" id="p6_m3_score" value="0">
+      </div>
+    </div>
+
+    <div class="column">
+      <h2 class="round-title">Round of 3</h2>
+      <div class="match">
+        <strong>Match 4:</strong>
+        Winner Match 1: <input type="number" id="winner_m1_score" value="0">
+        <br>
+        Winner Match 2: <input type="number" id="winner_m2_score" value="0">
+      </div>
+    </div>
+
+    <div class="column">
+      <h2 class="round-title">Final</h2>
+      <div class="final">
+        <strong>Final Match:</strong>
+        Highest Scorer Round of 6: <span id="highest_scorer">TBD</span><br>
+        Winner Match 4:  <span id="winner_match4">TBD</span><br>
+        <strong>Winner:</strong> <span id="tournament_winner">TBD</span>
+      </div>
+    </div>
+  </div>
+
+
+  <button onclick="calculateResults()">Calculate Results</button>
+
+</div>
+
+
+<script>
+function calculateResults() {
+    // Round of 6 Scores
+    let p1_m1 = parseInt(document.getElementById("p1_m1_score").value) || 0;
+    let p2_m1 = parseInt(document.getElementById("p2_m1_score").value) || 0;
+    let p3_m2 = parseInt(document.getElementById("p3_m2_score").value) || 0;
+    let p4_m2 = parseInt(document.getElementById("p4_m2_score").value) || 0;
+    let p5_m3 = parseInt(document.getElementById("p5_m3_score").value) || 0;
+    let p6_m3 = parseInt(document.getElementById("p6_m3_score").value) || 0;
+
+    // Determine Winners of Round of 6 (Basic Win Condition)
+    let winner_m1 = (p1_m1 > p2_m1) ? "Player 1" : "Player 2";
+    let winner_m2 = (p3_m2 > p4_m2) ? "Player 3" : "Player 4";
+    let winner_m3 = (p5_m3 > p6_m3) ? "Player 5" : "Player 6";
+
+    // Calculate total goals for each player in Round of 6
+    const playerGoals = {
+      "Player 1": p1_m1,
+      "Player 2": p2_m1,
+      "Player 3": p3_m2,
+      "Player 4": p4_m2,
+      "Player 5": p5_m3,
+      "Player 6": p6_m3,
+    };
+
+    // Determine highest scorer in Round of 6
+    let highestScorer = Object.keys(playerGoals).reduce((a, b) => playerGoals[a] > playerGoals[b] ? a : b);
+    document.getElementById("highest_scorer").textContent = highestScorer;
+
+    // Round of 3 Scores
+    let winner_m1_score = parseInt(document.getElementById("winner_m1_score").value) || 0;
+    let winner_m2_score = parseInt(document.getElementById("winner_m2_score").value) || 0;
+
+    // Determine winner of Round of 3
+    let winner_match4 = (winner_m1_score > winner_m2_score) ? winner_m1 : winner_m2;
+    document.getElementById("winner_match4").textContent = winner_match4;
+
+
+    // Determine Tournament Winner (Final Match Simulation)
+    // Assuming the highest scorer from Round of 6 is always "Player A" and the Round of 3 winner is "Player B" for this example.  You'd need input fields or a more complex system to get final scores.
+    //Example:  Player A score: <input type="number" id="final_player_a_score" value="0">
+    //        Player B score: <input type="number" id="final_player_b_score" value="0">
+
+    // For demonstration purposes, we'll hardcode a simple outcome:  Highest Scorer wins.
+    document.getElementById("tournament_winner").textContent = highestScorer;  //In this basic example, the top scorer always wins.  Replace with more complex logic as needed.
+
+
+}
+
+</script>
+
+</body>
+</html>
